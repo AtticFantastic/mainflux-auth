@@ -7,8 +7,17 @@
 
 Mainflux IoT authentication and authorization management service.
 
-### Details
-To find out more about the Mainflux IoT, please see our [wiki][wiki].
+### Install
+
+Mainflux Auth Server uses [Redis](https://redis.io/), so insure that it is installed on your system.
+
+Installing Mainflux Auth Server is trivial [`go get`](https://golang.org/cmd/go/):
+```bash
+go get github.com/mainflux/mainflux-auth
+$GOBIN/mainflux-auth
+```
+
+If you are new to Go, more information about setting-up environment and fetching Mainflux code can be found [here](https://github.com/mainflux/mainflux-core-doc/blob/master/goenv.md).
 
 ### Community
 #### Mailing lists
