@@ -85,3 +85,9 @@ func (a *AccessRequest) SetIdentity(uri string) error {
 
 	return nil
 }
+
+// Restricted determines whether or not a request requires master key access.
+// By convention, restricted requests are the ones without a resource ID.
+func (a *AccessRequest) Restricted() bool {
+	return a.Id == ""
+}
