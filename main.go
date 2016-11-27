@@ -72,10 +72,10 @@ func main() {
 		domain.SetSecretKey(cfg.SecretKey)
 	}
 
-	services.StartCaching(cfg.CacheURL())
+	services.StartCaching(cfg.RedisURL)
 	defer services.StopCaching()
 
-	if err := services.Subscribe(cfg.EventBus); err != nil {
+	if err := services.Subscribe(cfg.NatsURL, cfg.NatsTopic); err != nil {
 		fmt.Printf("Subscription failure. Cause: %s\n", err.Error())
 		os.Exit(1)
 	}

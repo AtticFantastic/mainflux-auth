@@ -1,4 +1,4 @@
-redisHost = "0.0.0.0"
-redisPort = 6379
-eventsTopic = "mainflux-events"
+redisURL = "0.0.0.0:6379"
+natsURL = "nats://0.0.0.0:4222"
+natsTopic = "mainflux-events"
 secretKey = "mainflux-api-key"

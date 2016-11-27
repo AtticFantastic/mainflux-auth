@@ -10,9 +10,9 @@ import (
 
 // Config represents the configurable service parameters.
 type Config struct {
-	RedisHost string `toml:"redisHost"`
-	RedisPort int    `toml:"redisPort"`
-	EventBus  string `toml:"eventsTopic"`
+	RedisURL  string `toml:"redisURL"`
+	NatsURL   string `toml:"natsURL"`
+	NatsTopic string `toml:"natsTopic"`
 	SecretKey string `toml:"secretKey"`
 }
 
@@ -22,10 +22,4 @@ func (cfg *Config) Load(file string) {
 		fmt.Printf("Cannot load config due to %s", err)
 		os.Exit(1)
 	}
-}
-
-// CacheURL retrieves an URL of a redis instance that will be used by the
-// service.
-func (cfg *Config) CacheURL() string {
-	return fmt.Sprintf("%s:%d", cfg.RedisHost, cfg.RedisPort)
 }
