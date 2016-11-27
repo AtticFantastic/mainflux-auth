@@ -1,3 +1,4 @@
 redisHost = "0.0.0.0"
 redisPort = 6379
+eventsTopic = "mainflux-events"
 secretKey = "mainflux-api-key"

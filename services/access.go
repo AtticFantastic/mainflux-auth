@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/garyburd/redigo/redis"
-	"github.com/mainflux/mainflux-auth/cache"
 	"github.com/mainflux/mainflux-auth/domain"
 )
 
@@ -22,7 +21,7 @@ func CheckPermissions(key string, req domain.AccessRequest) error {
 		return err
 	}
 
-	c := cache.Connection()
+	c := cache.Get()
 	defer c.Close()
 
 	cKey := fmt.Sprintf("auth:%s:%s:master", domain.UserType, subject)

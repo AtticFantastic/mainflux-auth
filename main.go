@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/mainflux/mainflux-auth/api"
-	"github.com/mainflux/mainflux-auth/cache"
 	"github.com/mainflux/mainflux-auth/config"
 	"github.com/mainflux/mainflux-auth/domain"
+	"github.com/mainflux/mainflux-auth/services"
 )
 
 const (
@@ -22,13 +22,33 @@ const (
 			-h, --help                  Prints this message end exits`
 )
 
-type options struct {
-	Config string
-	Help   bool
-}
+var banner = `
+ __    __     ______     __     __   __     ______   __         __  __     __  __    
+/\ "-./  \   /\  __ \   /\ \   /\ "-.\ \   /\  ___\ /\ \       /\ \/\ \   /\_\_\_\   
+\ \ \-./\ \  \ \  __ \  \ \ \  \ \ \-.  \  \ \  __\ \ \ \____  \ \ \_\ \  \/_/\_\/_  
+ \ \_\ \ \_\  \ \_\ \_\  \ \_\  \ \_\\"\_\  \ \_\    \ \_____\  \ \_____\   /\_\/\_\ 
+  \/_/  \/_/   \/_/\/_/   \/_/   \/_/ \/_/   \/_/     \/_____/   \/_____/   \/_/\/_/ 
+                                                                                     
+ ______     __  __     ______   __  __                                               
+/\  __ \   /\ \/\ \   /\__  _\ /\ \_\ \                                              
+\ \  __ \  \ \ \_\ \  \/_/\ \/ \ \  __ \                                             
+ \ \_\ \_\  \ \_____\    \ \_\  \ \_\ \_\                                            
+  \/_/\/_/   \/_____/     \/_/   \/_/\/_/  
+
+                       == Relax, everything's locked ==
+
+                        Made with <3 by Mainflux Team
+[w] http://mainflux.io
+[t] @mainflux
+
+`
 
 func main() {
-	opts := options{}
+	opts := struct {
+		Config string
+		Help   bool
+	}{}
+
 	flag.StringVar(&opts.Config, "c", "", "Configuration file.")
 	flag.StringVar(&opts.Config, "config", "", "Configuration file.")
 	flag.BoolVar(&opts.Help, "h", false, "Show help.")
@@ -52,33 +72,14 @@ func main() {
 		domain.SetSecretKey(cfg.SecretKey)
 	}
 
-	cache.Start(cfg.CacheURL())
-	defer cache.Stop()
+	services.StartCaching(cfg.CacheURL())
+	defer services.StopCaching()
 
-	// Print banner
+	if err := services.Subscribe(cfg.EventBus); err != nil {
+		fmt.Printf("Subscription failure. Cause: %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	fmt.Println(banner)
-	fmt.Println("Magic happens on port " + httpPort)
-
 	http.ListenAndServe(httpPort, api.Server())
 }
-
-var banner = `
- __    __     ______     __     __   __     ______   __         __  __     __  __    
-/\ "-./  \   /\  __ \   /\ \   /\ "-.\ \   /\  ___\ /\ \       /\ \/\ \   /\_\_\_\   
-\ \ \-./\ \  \ \  __ \  \ \ \  \ \ \-.  \  \ \  __\ \ \ \____  \ \ \_\ \  \/_/\_\/_  
- \ \_\ \ \_\  \ \_\ \_\  \ \_\  \ \_\\"\_\  \ \_\    \ \_____\  \ \_____\   /\_\/\_\ 
-  \/_/  \/_/   \/_/\/_/   \/_/   \/_/ \/_/   \/_/     \/_____/   \/_____/   \/_/\/_/ 
-                                                                                     
- ______     __  __     ______   __  __                                               
-/\  __ \   /\ \/\ \   /\__  _\ /\ \_\ \                                              
-\ \  __ \  \ \ \_\ \  \/_/\ \/ \ \  __ \                                             
- \ \_\ \_\  \ \_____\    \ \_\  \ \_\ \_\                                            
-  \/_/\/_/   \/_____/     \/_/   \/_/\/_/  
-
-                       == Relax, everything's locked ==
-
-                        Made with <3 by Mainflux Team
-[w] http://mainflux.io
-[t] @mainflux
-
-`

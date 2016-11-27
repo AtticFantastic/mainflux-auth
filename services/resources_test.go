@@ -1,20 +1,18 @@
-package services_test
+package services
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/garyburd/redigo/redis"
-	"github.com/mainflux/mainflux-auth/cache"
 	"github.com/mainflux/mainflux-auth/domain"
-	"github.com/mainflux/mainflux-auth/services"
 )
 
 func TestAddResource(t *testing.T) {
 	user, resource, id := "user", domain.DevType, "id"
-	services.AddResource(user, resource, id)
+	AddResource(user, resource, id)
 
-	c := cache.Connection()
+	c := cache.Get()
 	defer c.Close()
 
 	cKey := fmt.Sprintf("auth:users:%s:owned", user)

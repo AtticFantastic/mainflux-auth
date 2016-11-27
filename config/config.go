@@ -12,6 +12,7 @@ import (
 type Config struct {
 	RedisHost string `toml:"redisHost"`
 	RedisPort int    `toml:"redisPort"`
+	EventBus  string `toml:"eventsTopic"`
 	SecretKey string `toml:"secretKey"`
 }
 
