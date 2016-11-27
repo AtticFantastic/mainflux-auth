@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/garyburd/redigo/redis"
-	"github.com/mainflux/mainflux-auth/cache"
 	"github.com/mainflux/mainflux-auth/domain"
 )
 
@@ -18,7 +17,7 @@ func AddKey(mKey string, spec domain.KeySpec) (string, error) {
 		return "", err
 	}
 
-	c := cache.Connection()
+	c := cache.Get()
 	defer c.Close()
 
 	cKey := fmt.Sprintf("auth:%s:%s:master", domain.UserType, id)
@@ -58,7 +57,7 @@ func FetchKeys(mKey string) (domain.KeyList, error) {
 		return keys, &domain.AuthError{Code: http.StatusForbidden}
 	}
 
-	c := cache.Connection()
+	c := cache.Get()
 	defer c.Close()
 
 	cKey := fmt.Sprintf("auth:%s:%s:master", domain.UserType, user)
@@ -85,7 +84,7 @@ func FetchKeySpec(mKey string, key string) (domain.KeySpec, error) {
 		return spec, &domain.AuthError{Code: http.StatusForbidden}
 	}
 
-	c := cache.Connection()
+	c := cache.Get()
 	defer c.Close()
 
 	cKey := fmt.Sprintf("auth:%s:%s:master", domain.UserType, user)

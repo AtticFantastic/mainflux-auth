@@ -91,3 +91,20 @@ func TestSetIdentity(t *testing.T) {
 		}
 	}
 }
+
+func TestRestricted(t *testing.T) {
+	cases := []struct {
+		req        domain.AccessRequest
+		restricted bool
+	}{
+		{domain.AccessRequest{Action: "C", Type: domain.DevType}, true},
+		{domain.AccessRequest{Action: "R", Type: domain.DevType}, true},
+		{domain.AccessRequest{Action: "C", Type: domain.DevType, Id: "123"}, false},
+	}
+
+	for i, c := range cases {
+		if c.restricted != c.req.Restricted() {
+			t.Errorf("case %d: expected %t got %t", i+1, c.restricted, c.req.Restricted())
+		}
+	}
+}

@@ -16,6 +16,7 @@ func TestCheckPermissions(t *testing.T) {
 	)
 
 	user, _ := services.RegisterUser(username, password)
+	services.AddResource(user.Id, domain.DevType, device)
 	key, _ := services.AddKey(user.MasterKey, spec)
 
 	cases := []struct {
@@ -23,6 +24,13 @@ func TestCheckPermissions(t *testing.T) {
 		request domain.AccessRequest
 		granted bool
 	}{
+		{user.MasterKey, domain.AccessRequest{Action: "C", Type: domain.DevType}, true},
+		{user.MasterKey, domain.AccessRequest{"C", domain.DevType, device}, true},
+		{user.MasterKey, domain.AccessRequest{"R", domain.DevType, device}, true},
+		{user.MasterKey, domain.AccessRequest{"U", domain.DevType, device}, true},
+		{user.MasterKey, domain.AccessRequest{"U", domain.DevType, "not-owned"}, false},
+
+		{key, domain.AccessRequest{Action: "C", Type: domain.DevType}, false},
 		{key, domain.AccessRequest{"C", domain.DevType, device}, true},
 		{key, domain.AccessRequest{"R", domain.DevType, device}, true},
 		{key, domain.AccessRequest{"U", domain.DevType, device}, false},

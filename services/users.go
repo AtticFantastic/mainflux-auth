@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/garyburd/redigo/redis"
-	"github.com/mainflux/mainflux-auth/cache"
 	"github.com/mainflux/mainflux-auth/domain"
 )
 
@@ -18,7 +17,7 @@ func RegisterUser(username, password string) (domain.User, error) {
 		return user, &domain.AuthError{Code: http.StatusBadRequest}
 	}
 
-	c := cache.Connection()
+	c := cache.Get()
 	defer c.Close()
 
 	userKey := fmt.Sprintf("auth:%s:%s:profile", domain.UserType, username)
@@ -54,7 +53,7 @@ func Login(username, password string) (domain.User, error) {
 		return user, &domain.AuthError{Code: http.StatusBadRequest}
 	}
 
-	c := cache.Connection()
+	c := cache.Get()
 	defer c.Close()
 
 	cKey := fmt.Sprintf("auth:%s:%s:profile", domain.UserType, username)
