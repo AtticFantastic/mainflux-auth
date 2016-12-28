@@ -1,0 +1,4 @@
+redisURL = "redis:6379"
+natsURL = "nats://nats:4222"
+natsTopic = "mainflux-events"
+secretKey = "mainflux-api-key"
